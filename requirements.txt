@@ -1,0 +1,4 @@
+# Job Search Automation — runtime dependencies.
+# The scrapers (check_new.py, analyze_new.py) use only the Python stdlib;
+# Flask is the single external dependency, needed by app.py.
+Flask>=3.0,<4.0

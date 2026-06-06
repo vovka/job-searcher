@@ -1,0 +1,27 @@
+# Job Search Automation — containerized dashboard.
+#
+#   docker compose up -d --build              # build + run the dashboard
+#   docker compose run --rm job-searcher python3 check_new.py    # scrape now
+#   docker compose run --rm job-searcher python3 analyze_new.py  # AI re-score
+#
+# Dashboard: http://localhost:8080
+services:
+  job-searcher:
+    build: .
+    image: job-searcher:latest
+    container_name: job-searcher
+    # Run as the host user so bind-mounted state files (vacancies.md, etc.)
+    # are owned by you, not root.
+    user: "1000:1000"
+    ports:
+      - "8080:8080"
+    environment:
+      # Optional. Passed through from your shell or a local .env file. Without
+      # it, vacancies are still collected but not AI-scored.
+      - GROQ_API_KEY=${GROQ_API_KEY:-}
+    volumes:
+      # Bind-mount the project so collected state (vacancies.md, analyses.json,
+      # profile.md, logs) persists on the host and config.py edits apply on
+      # restart without rebuilding.
+      - ./:/app
+    restart: unless-stopped

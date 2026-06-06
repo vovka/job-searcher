@@ -1,0 +1,15 @@
+# Keep the build context (and baked image) lean. User state and logs are
+# bind-mounted at runtime via docker-compose, so they need not be copied in.
+.git
+.gitignore
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+.venv/
+venv/
+env/
+*.log
+.env
+.claude/
+.DS_Store
