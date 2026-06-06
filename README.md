@@ -74,6 +74,53 @@ python3 analyze_new.py   # Проаналізувати AI
 http://IP_ВАШОГО_СЕРВЕРА:8080
 ```
 
+## Альтернативний запуск через Docker
+
+Для Docker виконайте кроки 1-2 з швидкого старту так само: склонуйте проект, відредагуйте `config.py`
+та отримайте Groq API ключ. Далі замість кроків 3-5 використовуйте Docker-команди нижче.
+
+### 3. Додайте Groq API ключ у .env
+
+```bash
+cp .env.example .env
+nano .env         # <-- Впишіть GROQ_API_KEY
+```
+
+Для Docker рекомендовано зберігати ключ у `.env`. Контейнер передає його в застосунок через
+змінну середовища `GROQ_API_KEY`.
+
+### 4. Запустіть дашборд
+
+```bash
+docker compose up -d --build
+```
+
+Контейнер сам створить/оновить `profile.md`, а `vacancies.md` та `analyses.json` створить тільки
+якщо їх ще немає. Дашборд буде доступний на:
+
+```
+http://IP_ВАШОГО_СЕРВЕРА:8080
+```
+
+### 5. Перший запуск
+
+```bash
+docker compose run --rm job-searcher python3 check_new.py     # Знайти вакансії
+docker compose run --rm job-searcher python3 analyze_new.py   # Проаналізувати AI
+```
+
+Корисні команди:
+
+```bash
+docker compose logs -f job-searcher       # Переглянути логи дашборду
+docker compose restart job-searcher       # Перезапустити після зміни config.py
+docker compose down                       # Зупинити контейнер
+```
+
+`docker-compose.yml` монтує поточну папку в контейнер, тому `vacancies.md`, `analyses.json`,
+`profile.md` та логи зберігаються на хості. Автоматична перевірка кожні 2 години не запускається
+самим Docker Compose: для цього додайте cron на хості або запускайте команду `check_new.py` вручну.
+
 ## Що змінити в config.py
 
 | Секція | Що змінити |
